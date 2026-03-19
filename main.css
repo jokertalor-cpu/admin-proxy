@@ -7,9 +7,8 @@ body{
     background-color: rgba(117, 84, 24, 0.589);
     justify-content: space-between;
     border:3px solid gray;
-    padding:15px 50px;
+    padding:15px 50px}
 
-}
 .logo{
     color: brown;
     font-size: 24px;
@@ -17,6 +16,7 @@ body{
     margin: 20px 20px 20px 20px;
 
 }
+
 .class-bar{
     list-style: none;
     display: flex;
@@ -40,7 +40,8 @@ body{
        background-color: rgb(201, 192, 66);
 
 }
-.book{
+.book{height:auto;
+      width: 100px;
       display: flex;
       flex-direction: column;
       margin: 30px;
