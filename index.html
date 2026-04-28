@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Bookshelf | Central Control</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* CSS Root Variables & Base Styles */
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --danger: #ef4444;
+            --success: #22c55e;
+            --border: #e2e8f0;
+        }
+
+        body { font-family: 'Inter', sans-serif; background: var(--bg); margin: 0; }
+        .hidden { display: none !important; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        
+        /* Login Styles */
+        .login-wrapper { height: 100vh; display: flex; align-items: center; justify-content: center; }
+        .card { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); border: 1px solid var(--border); width: 100%; max-width: 400px; }
+        
+        /* Dashboard Styles */
+        header { background: white; padding: 1rem 2rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.2rem; }
+        input, select, textarea { width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: 8px; box-sizing: border-box; }
+        
+        .btn { padding: 0.75rem 1.5rem; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-main { background: var(--primary); color: white; }
+        .btn-danger { background: #fee2e2; color: var(--danger); }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        th { text-align: left; padding: 12px; background: #f8fafc; color: var(--text-muted); font-size: 0.8rem; }
+        td { padding: 12px; border-top: 1px solid var(--border); }
+        .book-cover-preview { width: 40px; height: 55px; border-radius: 4px; object-fit: cover; }
+    </style>
+</head>
+<body>
+
+<div id="login-section" class="login-wrapper">
+    <div class="card">
+        <div style="text-align: center; margin-bottom: 1.5rem;">
+            <i class="fa-solid fa-user-shield" style="font-size: 3rem; color: var(--primary);"></i>
+            <h2>System Admin</h2>
+            <p style="color: var(--text-muted);">Secure Management Portal</p>
+        </div>
+        <div style="margin-bottom: 1rem;">
+            <label>Admin Email</label>
+            <input type="email" id="login-email" placeholder="admin@example.com">
+        </div>
+        <div style="margin-bottom: 1.5rem;">
+            <label>Password</label>
+            <input type="password" id="login-pw" placeholder="••••••••">
+        </div>
+        <button class="btn btn-main" style="width: 100%;" onclick="handleLogin()">
+            <i class="fa-solid fa-right-to-bracket"></i> Login to System
+        </button>
+    </div>
+</div>
+
+<div id="admin-panel" class="hidden">
+    <header>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <i class="fa-solid fa-database" style="color: var(--primary); font-size: 1.5rem;"></i>
+            <h2 style="margin:0;">Control Panel</h2>
+        </div>
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <span id="user-email-display" style="font-size: 0.9rem; font-weight: 500;"></span>
+            <button class="btn btn-danger" onclick="handleLogout()">Logout</button>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="card" style="max-width: 100%; margin-bottom: 2rem;">
+            <h3 id="form-title"><i class="fa-solid fa-plus"></i> Add New Content</h3>
+            <input type="hidden" id="edit-book-id">
+            
+            <div class="form-grid">
+                <input type="text" id="title" placeholder="Book Title">
+                <select id="category">
+                    <option value="novel">NOVEL</option>
+                    <option value="technical">TECHNICAL</option>
+                    <option value="knowledge">KNOWLEDGE</option>
+                    <option value="xianxia">XIANXIA</option>
+                    </select>
+                <input type="text" id="author" placeholder="Author Name">
+                <input type="text" id="file-size" placeholder="File Size (e.g. 2MB)">
+                <textarea id="description" placeholder="Short description..." style="grid-column: 1/-1;"></textarea>
+                
+                <div>
+                    <label>Cover (File/URL)</label>
+                    <input type="file" id="cover-file" accept="image/*">
+                    <input type="text" id="cover-url" placeholder="or Cover URL">
+                </div>
+                <div>
+                    <label>PDF (File/URL)</label>
+                    <input type="file" id="pdf-file" accept=".pdf">
+                    <input type="text" id="download-link" placeholder="or PDF Link">
+                </div>
+                <input type="text" id="read-link" placeholder="Online Read Link">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <input type="checkbox" id="is-editor-choice" style="width: 20px;"> Editor Choice
+                </div>
+            </div>
+            
+            <div style="margin-top: 1.5rem;">
+                <button class="btn btn-main" id="save-btn" onclick="saveBook()">Save Changes</button>
+                <button class="btn hidden" id="cancel-btn" onclick="resetForm()" style="background:#ccc;">Cancel</button>
+            </div>
+        </div>
+
+        <div class="card" style="max-width: 100%;">
+            <h3><i class="fa-solid fa-table-list"></i> Book Inventory</h3>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Preview</th>
+                            <th>Title & Author</th>
+                            <th>Category</th>
+                            <th>Stats</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-book-list"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.42.0/dist/umd/supabase.js"></script>
+<script src="adminscript.js"></script>
+</body>
+</html>
